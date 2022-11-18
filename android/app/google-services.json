@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "796149776454",
+    "project_id": "cau-until",
+    "storage_bucket": "cau-until.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796149776454:android:579aac869e0e65a0898a47",
+        "android_client_info": {
+          "package_name": "com.cau.until.until"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796149776454-i2jb0ojvilo6e8pv27a4umjpltog10f2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqQiO4tqli38bUw2oU726LNwpq9u2Ok9c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796149776454-i2jb0ojvilo6e8pv27a4umjpltog10f2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "796149776454-cldrnv3jj85i72114eaa72n2ghuthu7p.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cau.until.until"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
