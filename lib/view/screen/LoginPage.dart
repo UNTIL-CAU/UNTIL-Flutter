@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import 'MainPage.dart';
+import 'ProgressPage.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -105,7 +106,7 @@ class _LoginFormState extends State<LoginForm> {
                                 setState(() {
                                   showSpinner = false;
                                 });
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const MainPage()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const ProgressPage()));
                               }
                             }
                           } on FirebaseAuthException catch (e) {
