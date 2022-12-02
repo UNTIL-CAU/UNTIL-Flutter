@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
-import 'package:intl/intl.dart';
+import 'package:until/styles.dart';
 
 import 'MainPage.dart';
 
@@ -28,6 +28,7 @@ class ProgressPage extends StatelessWidget {
         body: const TopCalender()
     );
   }
+
 }
 
 class TopCalender extends StatefulWidget {
@@ -39,62 +40,55 @@ class TopCalender extends StatefulWidget {
 
 class _TopCalenderState extends State<TopCalender> {
 
+  TextStyle untilDateStyle = const TextStyle(
+        color: mainColor, fontSize: 16, fontWeight: FontWeight.w600
+  );
+
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        body: CalendarWeek(
-          controller: CalendarWeekController(),
-          height: 150,
-          showMonth: true,
-          minDate: DateTime.now().add(
-            Duration(days: -365),
-          ),
-          maxDate: DateTime.now().add(
-            Duration(days: 365),
-          ),
+      child: Column(
+          children: [
+            CalendarWeek(
+              controller: CalendarWeekController(),
+              height: 150,
+              minDate: DateTime.now().add(
+                Duration(days: -365),
+              ),
+              maxDate: DateTime.now().add(
+                Duration(days: 365),
+              ),
+              dayOfWeekStyle: const TextStyle(color: mainColor, fontSize: 12),
+              dayOfSaturStyle: const TextStyle(color: saturdayColor, fontSize: 12),
+              dayOfSunStyle: const TextStyle(color: sundayColor, fontSize: 12),
 
-          onDatePressed: (DateTime datetime) {
-            // Do something
-          },
-          onDateLongPressed: (DateTime datetime) {
-            // Do something
-          },
-          onWeekChanged: () {
-            // Do something
-          },
-          monthViewBuilder: (DateTime time) => Align(
-            alignment: FractionalOffset.center,
-            child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 4),
-                child: Text(
-                  DateFormat.yMMMM().format(time),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.blue, fontWeight: FontWeight.w600),
-                )),
-          ),
-          decorations: [
-            DecorationItem(
-                decorationAlignment: FractionalOffset.bottomRight,
-                date: DateTime.now(),
-                decoration: Icon(
-                  Icons.today,
-                  color: Colors.blue,
-                )),
-            DecorationItem(
-                date: DateTime.now().add(Duration(days: 3)),
-                decoration: Text(
-                  'Holiday',
-                  style: TextStyle(
-                    color: Colors.brown,
-                    fontWeight: FontWeight.w600,
-                  ),
-                )),
+              todayDateStyle: untilDateStyle,
+              saturdayStyle: const TextStyle(
+                  color: saturdayColor, fontSize: 16, fontWeight: FontWeight.w600
+              ),
+              sundayStyle: const TextStyle(
+                  color: sundayColor, fontSize: 16, fontWeight: FontWeight.w600
+              ),
+              dateStyle: untilDateStyle,
+              pressedDateStyle: untilDateStyle,
+              pressedDateBackgroundColor: const Color(0xffdfe0ff),
+              todayBackgroundColor: Colors.transparent,
+              weekendsIndexes: [6],   //주말 하이라이트는 일요일만
+
+              onDatePressed: (DateTime datetime) {
+                // Do something
+              },
+              onDateLongPressed: (DateTime datetime) {
+                // Do something
+              },
+              onWeekChanged: () {
+                // Do something
+              },
+            ),
+            const Text('알맹이'),
           ],
-        ),
-      ),
+        )
     );
   }
 
