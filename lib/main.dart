@@ -1,5 +1,6 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:until/service/local_notification.dart';
 import 'package:until/styles.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:until/view/screen/SignupPage.dart';
@@ -10,6 +11,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await LocalNotification.initLocalNotificationPlugin();
+
   runApp(const MyApp());
 }
 
