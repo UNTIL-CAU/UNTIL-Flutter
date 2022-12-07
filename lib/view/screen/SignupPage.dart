@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:until/service/local_notification.dart';
 import 'package:until/view/screen/LoginPage.dart';
 import 'package:until/view/screen/MainPage.dart';
 
@@ -30,6 +31,13 @@ class _SignupFormState extends State<SignupForm> {
   String email = '';
   String password = '';
   String userName = '';
+
+  @override
+  void initState() {
+    LocalNotification.requestPermission();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
