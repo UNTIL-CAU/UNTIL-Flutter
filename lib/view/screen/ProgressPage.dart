@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
 import 'package:until/styles.dart';
 import 'package:intl/intl.dart';
+import 'package:until/view/screen/SignupPage.dart';
 import 'MainPage.dart';
 
 class Data_Task {
@@ -34,7 +35,12 @@ final List<Data_Task> data = [
       [
         CheckPoint('프론트', true, false, DateTime(2022, 10, 11)),
         CheckPoint('서버', false, true, DateTime(2022, 11, 21)),
-        CheckPoint('연동', false, true, DateTime(2022, 12, 11))
+        CheckPoint('연동', false, true, DateTime(2022, 12, 11)),
+        CheckPoint('연동', false, true, DateTime(2022, 12, 13)),
+        CheckPoint('연동', false, true, DateTime(2022, 12, 15)),
+        CheckPoint('연동', false, true, DateTime(2022, 12, 15)),
+        CheckPoint('연동', false, true, DateTime(2022, 12, 15)),
+        CheckPoint('연동', false, true, DateTime(2022, 12, 15))
       ],
       true),
   Data_Task(
@@ -45,7 +51,8 @@ final List<Data_Task> data = [
       [
         CheckPoint('기획', true, true, DateTime(2022, 10, 03)),
         CheckPoint('디자인', true, false, DateTime(2022, 11, 28)),
-        CheckPoint('앱만들기', false, true, DateTime(2022, 12, 12))
+        CheckPoint('앱만들기', false, true, DateTime(2022, 12, 12)),
+        CheckPoint('연동', false, true, DateTime(2022, 12, 15)),
       ],
       true),
   Data_Task(
@@ -56,7 +63,7 @@ final List<Data_Task> data = [
       [
         CheckPoint('서론', false, false, DateTime(2022, 12, 14)),
         CheckPoint('본론', false, false, DateTime(2022, 12, 20)),
-        CheckPoint('결론', false, false, DateTime(2022, 12, 27))
+        CheckPoint('연동', false, true, DateTime(2022, 12, 15)),
       ],
       false),
 ];
@@ -79,7 +86,7 @@ class ProgressPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const MainPage()), //Add Task 페이지로
+                      builder: (context) => const SignupPage()), //Add Task 페이지로
                 );
               },
               icon: const Icon(Icons.add),
@@ -110,7 +117,7 @@ class _TopCalenderState extends State<TopCalender> {
   Widget build(BuildContext context) {
     return CalendarWeek(
       controller: CalendarWeekController(),
-      height: MediaQuery.of(context).size.width * 0.35,
+      height: MediaQuery.of(context).size.width * 0.3,
       minDate: DateTime.now().add(
         const Duration(days: -365),
       ),
@@ -157,7 +164,7 @@ class _ProgressListState extends State<ProgressList> {
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 30),
+        padding: EdgeInsets.fromLTRB(20, 20, 30, 10),
         child: Text(
           'Currently in progress',
           style: TextStyle(
@@ -181,7 +188,7 @@ class _ProgressListState extends State<ProgressList> {
 
 Widget TaskItem(Data_Task task, BuildContext context) => Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+      padding: const EdgeInsets.fromLTRB(20, 15, 20, 13),
       height: 161,
       decoration: BoxDecoration(
         border: Border.all(
@@ -211,30 +218,29 @@ Widget TaskItem(Data_Task task, BuildContext context) => Container(
                   ))
             ],
           ),
-          Row(
-            children: [
-              Spacer(flex: 2),
-              Expanded(
-                  flex: 3,
-                  child: Container(
-                      height: 10,
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        separatorBuilder: (BuildContext context, int index) {
-                          return SizedBox(
-                            height: 5,
-                          );
-                        },
-                        itemCount: task.checkPoints.length,
-                        itemBuilder: (BuildContext context, int indexPoint) {
-                          return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              child: Point(task.checkPoints[indexPoint]));
-                        },
-                      ))),
-            ],
-          )
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                vertical: 1, horizontal: 15), //apply padding to all four sides
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SizedBox(
+                  height: 10,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: task.checkPoints.length,
+                    itemBuilder: (BuildContext context, int indexPoint) {
+                      return Padding(
+                          padding: EdgeInsets.only(
+                              left: 90 / (task.checkPoints.length)),
+                          child: Point(task.checkPoints[indexPoint]));
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

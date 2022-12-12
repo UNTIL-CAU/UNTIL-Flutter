@@ -246,7 +246,7 @@ class CalendarWeek extends StatefulWidget {
           Color dateBackgroundColor = Colors.transparent,
           Function(DateTime)? onDatePressed,
           Function(DateTime)? onDateLongPressed,
-          Color backgroundColor = Colors.transparent,
+          Color backgroundColor = Colors.white,
           List<String> dayOfWeek = dayOfWeekDefault,
           List<String> month = monthDefaults,
           bool showMonth = true,
@@ -366,8 +366,22 @@ class _CalendarWeekState extends State<CalendarWeek> {
       ));
 
   /// Layout of week
-  Widget _week(WeekItem weeks) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 21, vertical: 10),
+  Widget _week(WeekItem weeks) => Container(
+      margin: EdgeInsets.only(bottom: 15),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.background,
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xffe6e6e6),
+            blurRadius: 20.0,
+            spreadRadius: 0.0,
+            offset: const Offset(0, 10),
+          )
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
@@ -386,10 +400,11 @@ class _CalendarWeekState extends State<CalendarWeek> {
             Padding(padding: const EdgeInsets.all(5.0)),
 
             /// Date layout
-            _dates(weeks.days)
+
+            _dates(weeks.days),
           ],
         ),
-      );
+      ));
 
   /// Day of week item layout
   Widget _monthItem(String title) => Align(
