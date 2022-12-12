@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:until/service/local_notification.dart';
 import 'package:until/styles.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:until/view/screen/CheckPointPage.dart';
 import 'package:until/view/screen/SignupPage.dart';
 import 'firebase_options.dart';
 
@@ -26,21 +27,22 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "UNTIL",
       theme: ThemeData(
-          useMaterial3: true,
-          fontFamily: 'NanumSquareNeo',
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: mainColor,
-              brightness: Brightness.light),
+        useMaterial3: true,
+        fontFamily: 'NanumSquareNeo',
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: mainColor,
+          brightness: Brightness.light,
+        ),
       ),
       darkTheme: ThemeData(
-          useMaterial3: true,
-          fontFamily: 'NanumSquareNeo',
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: mainColor,
-              brightness: Brightness.dark
-          )
+        useMaterial3: true,
+        fontFamily: 'NanumSquareNeo',
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: mainColor,
+          brightness: Brightness.dark,
+        ),
       ),
-      home: const SignupPage(),
+      home: const CheckPointPage(),
     );
   }
 }
