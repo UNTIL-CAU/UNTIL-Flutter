@@ -328,8 +328,8 @@ class _CalendarWeekState extends State<CalendarWeek> {
 
       /// [_currentWeekIndex] is index of week in [List] weeks contain today
 
-      .._currentWeekIndex =
-          findCurrentWeekIndexByDate(controller._selectedDate, controller._weeks)
+      .._currentWeekIndex = findCurrentWeekIndexByDate(
+          controller._selectedDate, controller._weeks)
       .._widgetJumpToDate = _jumToDateHandler
       .._hasClient = true;
 
@@ -367,29 +367,29 @@ class _CalendarWeekState extends State<CalendarWeek> {
 
   /// Layout of week
   Widget _week(WeekItem weeks) => Padding(
-      padding: EdgeInsets.symmetric(horizontal: 21, vertical: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          // Month
-          //monthViewBuilder는 안씀
-          /*(widget.monthDisplay &&
+        padding: EdgeInsets.symmetric(horizontal: 21, vertical: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            // Month
+            //monthViewBuilder는 안씀
+            /*(widget.monthDisplay &&
                   widget.monthViewBuilder != null &&
                   weeks.days.firstWhere((el) => el != null) != null)
               ? widget
                   .monthViewBuilder!(weeks.days.firstWhere((el) => el != null)!)
               : _monthItem(weeks.month),*/
 
-          /// Day of week layout
-          _dayOfWeek(weeks.dayOfWeek),
+            /// Day of week layout
+            _dayOfWeek(weeks.dayOfWeek),
 
-          Padding(padding: const EdgeInsets.all(10.0)),
+            Padding(padding: const EdgeInsets.all(5.0)),
 
-          /// Date layout
-          _dates(weeks.days)
-        ],
-      ),
-  );
+            /// Date layout
+            _dates(weeks.days)
+          ],
+        ),
+      );
 
   /// Day of week item layout
   Widget _monthItem(String title) => Align(
@@ -424,8 +424,8 @@ class _CalendarWeekState extends State<CalendarWeek> {
             style: title == 'SAT'
                 ? widget.dayOfSaturStyle
                 : title == 'SUN'
-                ? widget.dayOfSunStyle
-                : widget.dayOfWeekStyle,
+                    ? widget.dayOfSunStyle
+                    : widget.dayOfWeekStyle,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
           ),
@@ -442,8 +442,8 @@ class _CalendarWeekState extends State<CalendarWeek> {
       today: controller._today,
       date: date,
       dateStyle: date != null && (date.weekday == 6)
-              ? widget.saturdayStyle
-              : date != null && (date.weekday == 7)
+          ? widget.saturdayStyle
+          : date != null && (date.weekday == 7)
               ? widget.sundayStyle
               : widget.dateStyle,
       pressedDateStyle: widget.datePressedStyle,
