@@ -13,4 +13,9 @@ class SharedPrefManager{
     final spf = await SharedPreferences.getInstance();
     spf.setString('userId', userId!);
   }
+
+  Future<bool> isThereUserData() async {
+    final spf = await SharedPreferences.getInstance();
+    return spf.containsKey('userId');
+  }
 }

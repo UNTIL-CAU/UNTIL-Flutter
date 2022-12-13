@@ -1,31 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:until/model/task_data.dart';
+import 'package:until/model/task_provider.dart';
 import 'SetCheckpointsPage.dart';
-
-class Data_Task {
-  String name;
-  String startDate;
-  String endDate;
-  String tag;
-  List<Data_Checkpoint> checkpoints = [];
-
-  Data_Task(this.name, this.startDate, this.endDate, this.tag);
-
-  void AddSchedule(Data_Checkpoint schedule) {
-    checkpoints.add(schedule);
-  }
-}
-
-class Data_Checkpoint {
-  int index;
-  String name;
-  bool isFinished = false;
-  bool isDelayed = false;
-  String date;
-  Data_Task task;
-
-  Data_Checkpoint(this.index, this.name, this.date, this.task);
-}
 
 class AddTaskPage extends StatelessWidget {
   const AddTaskPage({Key? key}) : super(key: key);
@@ -57,6 +36,8 @@ class _AddTaskFormState extends State<AddTaskForm> {
   final _addTaskKey = GlobalKey<FormState>();
 
   String _taskName = '';
+  Timestamp? _start;
+  Timestamp? _end;
   String _tag = '';
 
   @override
@@ -134,11 +115,9 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       if (pickedDate != null) {
                         String formattedDate =
                             DateFormat("yyyy-MM-dd").format(pickedDate);
-
-                        setState(
-                          () {
-                            _startDateController.text =
-                                formattedDate.toString();
+                        setState(() {
+                            _startDateController.text = formattedDate.toString();
+                            _start = Timestamp.fromDate(pickedDate);
                           },
                         );
                       } else {
@@ -156,10 +135,11 @@ class _AddTaskFormState extends State<AddTaskForm> {
                   TextFormField(
                     controller: _endDateController,
                     decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Date',
-                        helperText: '',
-                        suffixIcon: Icon(Icons.calendar_today)),
+                      border: OutlineInputBorder(),
+                      labelText: 'Date',
+                      helperText: '',
+                      suffixIcon: Icon(Icons.calendar_today),
+                    ),
                     validator: (value) {
                       if (value == null) {
                         return "Please select an end date.";
@@ -189,25 +169,21 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       if (pickedDate != null) {
                         String formattedDate =
                             DateFormat("yyyy-MM-dd").format(pickedDate);
-
                         setState(() {
                           _endDateController.text = formattedDate.toString();
+                          _end = Timestamp.fromDate(pickedDate);
                         });
                       } else {
                         print("Not selected");
                       }
                     },
                   ),
-                  const SizedBox(
-                    height: 12,
-                  ),
+                  const SizedBox(height: 12,),
                   const Text(
                     "Tag",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
+                  const SizedBox(height: 8,),
                   TextFormField(
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -234,20 +210,19 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       onPressed: () async {
                         if (_addTaskKey.currentState!.validate()) {
                           _addTaskKey.currentState!.save();
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SetCheckpointsPage(
-                                Data_Task(
-                                  _taskName,
-                                  _startDateController.text,
-                                  _endDateController.text,
-                                  _tag,
-                                ),
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => SetCheckpointsPage(
+                              task: TaskData(
+                                name: _taskName,
+                                startDate: _start!,
+                                endDate: _end!,
+                                tag: _tag,
+                                imminent: false,
+                                checkpoints: 0,
+                                finishedCheckpoints: 0,
                               ),
                             ),
-                          );
+                          ),);
                         }
                       },
                       child: const Text(

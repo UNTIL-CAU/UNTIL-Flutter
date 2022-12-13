@@ -110,6 +110,7 @@ class _LoginFormState extends State<LoginForm> {
                                   showSpinner = false;
                                 });
                                 _spfManager.setUserId(currentUser.user!.uid);
+                                Navigator.pop(context);
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const ProgressPage()));
                               }
                             }
