@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:until/model/task_data.dart';
 import 'package:until/model/task_provider.dart';
+import 'package:until/service/local_notification.dart';
 import 'package:until/shared_preference.dart';
 import 'package:until/view/screen/ProgressPage.dart';
 import 'package:until/view/widget/checkpoint_setter.dart';
@@ -153,6 +154,8 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                                         "finishedCheckpoints": _task.finishedCheckpoints,
                                         "imminent": _task.imminent,
                                       });
+                                      LocalNotification.initLocalNotificationPlugin();
+                                      LocalNotification.requestPermission();
                                       for (int i = 0; i < context.read<TaskProvider>().length; i++){
                                         final newCheckpointRef = db.collection('checkpoint').doc();
                                         final _checkpoint = context.read<TaskProvider>().checkpoints[i];
@@ -164,7 +167,20 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                                           "isDelayed": _checkpoint.isDelayed,
                                           "isFinished": _checkpoint.isFinished,
                                         });
+                                        LocalNotification.setNotificationSchedule(0,
+                                            "체크포인트가 임박했습니다!",
+                                            "다음 체크 포인트가 1일 남았습니다.\n어서 확인해보세요!",
+                                            _checkpoint.untilDate.toDate().year,
+                                            _checkpoint.untilDate.toDate().month,
+                                            _checkpoint.untilDate.toDate().subtract(const Duration(days:1)).day,
+                                            9,
+                                            0
+                                        );
                                       }
+                                      LocalNotification.notificationNow(
+                                          "체크포인트가 임박했습니다!",
+                                          "다음 체크 포인트가 1일 남았습니다.\n어서 확인해보세요!"
+                                      );
                                       Navigator.push(context, MaterialPageRoute(
                                           builder: (context) => const ProgressPage(),
                                       ),);

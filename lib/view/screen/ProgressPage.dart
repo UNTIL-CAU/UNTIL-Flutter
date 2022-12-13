@@ -173,7 +173,12 @@ class _ProgressListState extends State<ProgressList> {
                         .isBefore(element['end'].toDate())));
 
                 if (docs.isEmpty) {
-                  return const Text("sorry, there is no task");
+                  return Center(
+                    child: Text(
+                      "Sorry, There is no task.\nPlease add a new task.",
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  );
                 }
                 return ListView.builder(
                   shrinkWrap: true,
