@@ -40,9 +40,10 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
   final ScrollController _scrollController = ScrollController();
 
   final _spfManager = SharedPrefManager();
+  String refIndex = '';
   Future? future;
 
-  Future<String?> initInfo() async{
+  Future<String?> initInfo() async {
     return await _spfManager.getUserId();
   }
 
@@ -51,6 +52,13 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
     super.initState();
     context.read<TaskProvider>().setTask(widget.task);
     future = initInfo();
+    FirebaseFirestore.instance
+        .collection('task')
+        .get()
+        .then((QuerySnapshot ss) {
+      //checkpoint의 ref값을 6자리의 숫자로 바꾼다.
+      refIndex = ss.docs.length.toString().padLeft(6, '0');
+    });
   }
 
   @override
@@ -63,7 +71,7 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
       body: FutureBuilder(
         future: future,
         builder: (context, userId) {
-          if (userId.data == null){
+          if (userId.data == null) {
             return const Center(child: CircularProgressIndicator());
           }
           return SafeArea(
@@ -76,12 +84,15 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                     child: ListView(
                       controller: _scrollController,
                       children: [
-                        const SizedBox(height: 20,),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         Container(
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black45, width: 1.0),
+                            border:
+                                Border.all(color: Colors.black45, width: 1.0),
                             borderRadius:
-                            const BorderRadius.all(Radius.circular(16.0)),
+                                const BorderRadius.all(Radius.circular(16.0)),
                           ),
                           child: Column(
                             children: [
@@ -103,7 +114,9 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                                     fontWeight: FontWeight.w600,
                                     color: Color.fromRGBO(77, 87, 169, 1.0)),
                               ),
-                              const SizedBox(height: 6,),
+                              const SizedBox(
+                                height: 6,
+                              ),
                             ],
                           ),
                         ),
@@ -112,10 +125,13 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                         ),
                         const Text(
                           "CheckPoints",
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w600),
                         ),
                         if (context.read<TaskProvider>().isEmpty) ...[
-                          const SizedBox(height: 175,),
+                          const SizedBox(
+                            height: 175,
+                          ),
                           const Align(
                             alignment: Alignment.center,
                             child: Text(
@@ -124,14 +140,22 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                             ),
                           ),
                         ] else ...[
-                          const SizedBox(height: 20,),
+                          const SizedBox(
+                            height: 20,
+                          ),
                           const Divider(
                             thickness: 1,
                             color: Colors.black87,
                           ),
-                          for (var i = 0; i < context.read<TaskProvider>().length; i++)
-                            CheckpointSetter(index: i,),
-                          const SizedBox(height: 24,),
+                          for (var i = 0;
+                              i < context.read<TaskProvider>().length;
+                              i++)
+                            CheckpointSetter(
+                              index: i,
+                            ),
+                          const SizedBox(
+                            height: 24,
+                          ),
                           Align(
                             alignment: Alignment.bottomCenter,
                             child: Container(
@@ -141,24 +165,42 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                                 height: 40,
                                 child: ElevatedButton(
                                   onPressed: () async {
-                                    if (_setCheckpointKey.currentState!.validate()) {
-                                      final newTaskRef = db.collection('task').doc();
-                                      final _task = context.read<TaskProvider>().task;
+                                    if (_setCheckpointKey.currentState!
+                                        .validate()) {
+                                      final newTaskRef =
+                                          db.collection('task').doc();
+                                      final _task =
+                                          context.read<TaskProvider>().task;
                                       await newTaskRef.set({
                                         "name": _task.name,
                                         "userId": userId.data,
                                         "start": _task.startDate,
                                         "end": _task.endDate,
                                         "tag": _task.tag,
-                                        "checkpoints": context.read<TaskProvider>().length,
-                                        "finishedCheckpoints": _task.finishedCheckpoints,
+                                        "checkpoints":
+                                            context.read<TaskProvider>().length,
+                                        "finishedCheckpoints":
+                                            _task.finishedCheckpoints,
                                         "imminent": _task.imminent,
                                       });
-                                      LocalNotification.initLocalNotificationPlugin();
+                                      LocalNotification
+                                          .initLocalNotificationPlugin();
                                       LocalNotification.requestPermission();
-                                      for (int i = 0; i < context.read<TaskProvider>().length; i++){
-                                        final newCheckpointRef = db.collection('checkpoint').doc();
-                                        final _checkpoint = context.read<TaskProvider>().checkpoints[i];
+                                      for (int i = 0;
+                                          i <
+                                              context
+                                                  .read<TaskProvider>()
+                                                  .length;
+                                          i++) {
+                                        String refString =
+                                            ((int.parse(refIndex) + i))
+                                                .toString();
+                                        final newCheckpointRef = db
+                                            .collection('checkpoint')
+                                            .doc(refString);
+                                        final _checkpoint = context
+                                            .read<TaskProvider>()
+                                            .checkpoints[i];
                                         await newCheckpointRef.set({
                                           "name": _checkpoint.name,
                                           "userId": userId.data,
@@ -167,25 +209,39 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                                           "isDelayed": _checkpoint.isDelayed,
                                           "isFinished": _checkpoint.isFinished,
                                         });
-                                        LocalNotification.setNotificationSchedule(0,
+                                        LocalNotification.setNotificationSchedule(
+                                            0,
                                             "체크포인트가 임박했습니다!",
                                             "다음 체크 포인트가 1일 남았습니다.\n어서 확인해보세요!",
                                             _checkpoint.untilDate.toDate().year,
-                                            _checkpoint.untilDate.toDate().month,
-                                            _checkpoint.untilDate.toDate().subtract(const Duration(days:1)).day,
+                                            _checkpoint.untilDate
+                                                .toDate()
+                                                .month,
+                                            _checkpoint.untilDate
+                                                .toDate()
+                                                .subtract(
+                                                    const Duration(days: 1))
+                                                .day,
                                             9,
-                                            0
-                                        );
-                                        if (_checkpoint.untilDate.toDate().subtract(const Duration(days:1)).day == Timestamp.now().toDate().day) {
+                                            0);
+                                        if (_checkpoint.untilDate
+                                                .toDate()
+                                                .subtract(
+                                                    const Duration(days: 1))
+                                                .day ==
+                                            Timestamp.now().toDate().day) {
                                           LocalNotification.notificationNow(
                                               "체크포인트가 임박했습니다!",
-                                              "다음 체크 포인트가 1일 남았습니다.\n어서 확인해보세요!"
-                                          );
+                                              "다음 체크 포인트가 1일 남았습니다.\n어서 확인해보세요!");
                                         }
                                       }
-                                      Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) => const ProgressPage(),
-                                      ),);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ProgressPage(),
+                                        ),
+                                      );
                                     }
                                   },
                                   child: const Text('ADD TASK'),
@@ -202,33 +258,37 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                     child: Container(
                       margin: const EdgeInsets.fromLTRB(0, 0, 15, 30),
                       child: ConstrainedBox(
-                        constraints:
-                        const BoxConstraints.tightFor(width: 60, height: 60),
+                        constraints: const BoxConstraints.tightFor(
+                            width: 60, height: 60),
                         child: ElevatedButton(
                           style: ButtonStyle(
                             shape: MaterialStateProperty.resolveWith(
-                                  (states) => RoundedRectangleBorder(
+                              (states) => RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                             ),
                             backgroundColor: MaterialStateProperty.resolveWith(
-                                    (states) => Colors.white70),
-                            elevation:
-                            MaterialStateProperty.resolveWith((states) => 3.0),
+                                (states) => Colors.white70),
+                            elevation: MaterialStateProperty.resolveWith(
+                                (states) => 3.0),
                           ),
                           onPressed: () async {
-                            setState(() {
-                              context.read<TaskProvider>().addCheckpoint();
-                            },
+                            setState(
+                              () {
+                                context.read<TaskProvider>().addCheckpoint();
+                              },
                             );
                             Future.delayed(
                               const Duration(milliseconds: 100),
-                                  () {
-                                if (_scrollController.position.maxScrollExtent > 0) {
+                              () {
+                                if (_scrollController.position.maxScrollExtent >
+                                    0) {
                                   _scrollController.animateTo(
-                                      _scrollController.position.maxScrollExtent +
+                                      _scrollController
+                                              .position.maxScrollExtent +
                                           ITEM_HEIGHT,
-                                      duration: const Duration(milliseconds: 900),
+                                      duration:
+                                          const Duration(milliseconds: 900),
                                       curve: Curves.fastOutSlowIn);
                                 }
                               },
