@@ -253,10 +253,8 @@ class _CheckpointSetterState extends State<CheckpointSetter> {
                   labelText: 'CheckPoint Name',
                   helperText: '',
                 ),
-                onSaved: (value) {
-                  if (value != null && value.isEmpty == false) {
-                    widget.data.name = value;
-                  }
+                onChanged: (value) {
+                  widget.data.name = value!;
                 },
                 validator: (value) {
                   if (value == null) {
