@@ -6,6 +6,7 @@ import 'package:until/service/local_notification.dart';
 import 'package:until/shared_preference.dart';
 import 'package:until/view/screen/LoginPage.dart';
 import 'package:until/view/screen/MainPage.dart';
+import 'package:until/view/screen/ProgressPage.dart';
 
 class SignupPage extends StatelessWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -33,10 +34,18 @@ class _SignupFormState extends State<SignupForm> {
   String email = '';
   String password = '';
   String userName = '';
-
+  
+  Future<void> checkUser() async {
+    if (await _spfManager.isThereUserData()) {
+      Navigator.pop(context);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const ProgressPage()));
+    }
+  }
+  
   @override
   void initState() {
     LocalNotification.requestPermission();
+    checkUser();
     super.initState();
   }
 

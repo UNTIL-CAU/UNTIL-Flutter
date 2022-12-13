@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
         ),
       ),
-      home: const AddTaskPage(),
+      home: const SignupPage(),
     );
   }
 }
