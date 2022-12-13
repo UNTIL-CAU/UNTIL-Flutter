@@ -146,12 +146,9 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       } else if (value.isEmpty) {
                         return "Please select an end date.";
                       } else {
-                        DateTime start = DateTime.parse(value);
-                        DateTime end =
-                            DateTime.parse(_startDateController.text);
-                        if (end.year > start.year ||
-                            end.month > start.month ||
-                            end.day > start.day) {
+                        DateTime end = DateTime.parse(value);
+                        DateTime start = DateTime.parse(_startDateController.text);
+                        if (end.isBefore(start)) {
                           return "The end date is faster than the start date";
                         } else {
                           return null;

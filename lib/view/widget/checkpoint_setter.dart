@@ -89,12 +89,7 @@ class _CheckpointSetterState extends State<CheckpointSetter> {
                           DateTime date = DateTime.parse(value);
                           DateTime endDate = context.read<TaskProvider>().task.endDate.toDate();
                           DateTime startDate = context.read<TaskProvider>().task.startDate.toDate();
-                          if (startDate.year > date.year ||
-                              startDate.month > date.month ||
-                              startDate.day > date.day ||
-                              endDate.year < date.year ||
-                              endDate.month < date.month ||
-                              endDate.day < date.day) {
+                          if (date.isBefore(startDate) || date.isAfter(endDate)) {
                             return "CheckPoint date is over the bound";
                           } else {
                             return null;

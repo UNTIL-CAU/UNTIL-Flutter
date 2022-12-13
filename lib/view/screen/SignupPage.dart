@@ -153,7 +153,7 @@ class _SignupFormState extends State<SignupForm> {
                                             showSpinner = false;
                                           });
                                           _spfManager.setUserId(newUser.user!.uid);
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const MainPage()));
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ProgressPage()));
                                         }
                                       }
                                     } catch (e) {
