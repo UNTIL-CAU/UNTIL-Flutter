@@ -4,8 +4,8 @@ import 'package:flutter_calendar_week/flutter_calendar_week.dart';
 import 'package:until/model/task_data.dart';
 import 'package:until/styles.dart';
 import 'package:intl/intl.dart';
-import 'package:until/view/screen/SignupPage.dart';
-import 'MainPage.dart';
+import 'AddTaskPage.dart';
+import 'CheckPointPage.dart';
 
 class ProgressPage extends StatelessWidget {
   const ProgressPage({Key? key}) : super(key: key);
@@ -25,7 +25,8 @@ class ProgressPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const SignupPage()), //Add Task 페이지로
+                      builder: (context) =>
+                          const AddTaskPage()), //Add Task 페이지로
                 );
               },
               icon: const Icon(Icons.add),
@@ -146,8 +147,8 @@ Widget TaskItem(TaskData task, BuildContext context) => Container(
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                const MainPage()), //Add Task 페이지로
+                          builder: (context) => const CheckPointPage(),
+                        ), //CheckPoint 페이지로
                       );
                     },
                     icon: const Icon(
@@ -208,15 +209,10 @@ Widget TaskContent(TaskData task) => Column(
               vertical: 2), //apply padding to all four sides
           child: SizedBox(
             height: 20,
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: task.tags.length,
-                itemBuilder: (BuildContext context, int indexTag) {
-                  return Text(
-                    '#${task.tags[indexTag]} ',
-                    style: const TextStyle(color: Colors.black54, fontSize: 12),
-                  );
-                }),
+            child: Text(
+              '#${task.tag} ',
+              style: const TextStyle(color: Colors.black54, fontSize: 12),
+            ),
           ),
         ),
         Padding(

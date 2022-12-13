@@ -6,10 +6,10 @@ class Data_Task {
   String name;
   String startDate;
   String endDate;
-  List<String> tags;
+  String tag;
   List<Data_Checkpoint> checkpoints = [];
 
-  Data_Task(this.name, this.startDate, this.endDate, this.tags);
+  Data_Task(this.name, this.startDate, this.endDate, this.tag);
 
   void AddSchedule(Data_Checkpoint schedule) {
     checkpoints.add(schedule);
@@ -19,6 +19,8 @@ class Data_Task {
 class Data_Checkpoint {
   int index;
   String name;
+  bool isFinished = false;
+  bool isDelayed = false;
   String date;
   Data_Task task;
 
@@ -35,7 +37,7 @@ class AddTaskPage extends StatelessWidget {
         centerTitle: true,
         title: const Text('ADD TASK'),
       ),
-      body: AddTaskForm(),
+      body: const AddTaskForm(),
       resizeToAvoidBottomInset: false,
     );
   }
@@ -49,19 +51,19 @@ class AddTaskForm extends StatefulWidget {
 }
 
 class _AddTaskFormState extends State<AddTaskForm> {
-  TextEditingController _startDateController = TextEditingController();
-  TextEditingController _endDateController = TextEditingController();
+  final TextEditingController _startDateController = TextEditingController();
+  final TextEditingController _endDateController = TextEditingController();
 
   final _addTaskKey = GlobalKey<FormState>();
 
   String _taskName = '';
-  String _tags = '';
+  String _tag = '';
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    _startDateController.text="";
-    _endDateController.text="";
+    _startDateController.text = "";
+    _endDateController.text = "";
   }
 
   @override
@@ -69,14 +71,15 @@ class _AddTaskFormState extends State<AddTaskForm> {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child:
-        Form(
+        child: Form(
           key: _addTaskKey,
           child: Stack(
             children: [
               ListView(
                 children: [
-                  const SizedBox(height: 20,),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   TextFormField(
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -95,23 +98,23 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 12,),
+                  const SizedBox(
+                    height: 12,
+                  ),
                   const Text(
                     "Starts",
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(height: 8,),
+                  const SizedBox(
+                    height: 8,
+                  ),
                   TextFormField(
                     controller: _startDateController,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Date',
                         helperText: '',
-                        suffixIcon: Icon(Icons.calendar_today)
-                    ),
+                        suffixIcon: Icon(Icons.calendar_today)),
                     validator: (value) {
                       if (value == null) {
                         return "Please select a start date.";
@@ -129,11 +132,15 @@ class _AddTaskFormState extends State<AddTaskForm> {
                         lastDate: DateTime(2101),
                       );
                       if (pickedDate != null) {
-                        String formattedDate = DateFormat("yyyy-MM-dd").format(pickedDate);
+                        String formattedDate =
+                            DateFormat("yyyy-MM-dd").format(pickedDate);
 
-                        setState(() {
-                          _startDateController.text = formattedDate.toString();
-                        });
+                        setState(
+                          () {
+                            _startDateController.text =
+                                formattedDate.toString();
+                          },
+                        );
                       } else {
                         print("Not selected");
                       }
@@ -141,20 +148,18 @@ class _AddTaskFormState extends State<AddTaskForm> {
                   ),
                   const Text(
                     "Ends",
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(height: 8,),
+                  const SizedBox(
+                    height: 8,
+                  ),
                   TextFormField(
                     controller: _endDateController,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Date',
                         helperText: '',
-                        suffixIcon: Icon(Icons.calendar_today)
-                    ),
+                        suffixIcon: Icon(Icons.calendar_today)),
                     validator: (value) {
                       if (value == null) {
                         return "Please select an end date.";
@@ -162,8 +167,11 @@ class _AddTaskFormState extends State<AddTaskForm> {
                         return "Please select an end date.";
                       } else {
                         DateTime start = DateTime.parse(value);
-                        DateTime end = DateTime.parse(_startDateController.text);
-                        if (end.year > start.year || end.month > start.month || end.day > start.day) {
+                        DateTime end =
+                            DateTime.parse(_startDateController.text);
+                        if (end.year > start.year ||
+                            end.month > start.month ||
+                            end.day > start.day) {
                           return "The end date is faster than the start date";
                         } else {
                           return null;
@@ -179,7 +187,8 @@ class _AddTaskFormState extends State<AddTaskForm> {
                         lastDate: DateTime(2101),
                       );
                       if (pickedDate != null) {
-                        String formattedDate = DateFormat("yyyy-MM-dd").format(pickedDate);
+                        String formattedDate =
+                            DateFormat("yyyy-MM-dd").format(pickedDate);
 
                         setState(() {
                           _endDateController.text = formattedDate.toString();
@@ -189,15 +198,16 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       }
                     },
                   ),
-                  const SizedBox(height: 12,),
-                  const Text(
-                    "Tags",
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600
-                    ),
+                  const SizedBox(
+                    height: 12,
                   ),
-                  const SizedBox(height: 8,),
+                  const Text(
+                    "Tag",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
                   TextFormField(
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -205,7 +215,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       helperText: '',
                     ),
                     onSaved: (value) {
-                      _tags = value!;
+                      _tag = value!;
                     },
                     validator: (value) {
                       return null;
@@ -222,18 +232,30 @@ class _AddTaskFormState extends State<AddTaskForm> {
                     height: 40,
                     child: ElevatedButton(
                       onPressed: () async {
-                        if(_addTaskKey.currentState!.validate()) {
+                        if (_addTaskKey.currentState!.validate()) {
                           _addTaskKey.currentState!.save();
 
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => SetCheckpointsPage(
-                              Data_Task(_taskName, _startDateController.text, _endDateController.text, _tags.replaceAll(' ', '').split(','))
-                          )));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SetCheckpointsPage(
+                                Data_Task(
+                                  _taskName,
+                                  _startDateController.text,
+                                  _endDateController.text,
+                                  _tag,
+                                ),
+                              ),
+                            ),
+                          );
                         }
                       },
-                      child: const Text('SET CHECKPOINTS')
+                      child: const Text(
+                        'SET CHECKPOINTS',
+                      ),
                     ),
                   ),
-                )
+                ),
               ),
             ],
           ),
