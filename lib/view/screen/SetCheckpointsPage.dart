@@ -176,11 +176,13 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                                             9,
                                             0
                                         );
+                                        if (_checkpoint.untilDate.toDate().subtract(const Duration(days:1)).day == Timestamp.now().toDate().day) {
+                                          LocalNotification.notificationNow(
+                                              "체크포인트가 임박했습니다!",
+                                              "다음 체크 포인트가 1일 남았습니다.\n어서 확인해보세요!"
+                                          );
+                                        }
                                       }
-                                      LocalNotification.notificationNow(
-                                          "체크포인트가 임박했습니다!",
-                                          "다음 체크 포인트가 1일 남았습니다.\n어서 확인해보세요!"
-                                      );
                                       Navigator.push(context, MaterialPageRoute(
                                           builder: (context) => const ProgressPage(),
                                       ),);
