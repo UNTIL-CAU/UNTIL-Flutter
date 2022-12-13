@@ -381,7 +381,7 @@ class _CalendarWeekState extends State<CalendarWeek> {
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+        padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
