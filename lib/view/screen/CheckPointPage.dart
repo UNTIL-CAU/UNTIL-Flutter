@@ -237,11 +237,13 @@ class _CheckPointsState extends State<CheckPoints> {
           (element) =>
               nowDate == DateFormat('MMMM dd').format(element.untilDate),
         );
-    data[data_index].checkPoints.asMap().forEach((index, element) {
-      if (nowDate == DateFormat('MMMM dd').format(element.untilDate)) {
-        afterTodayIndex = index + 1;
-      }
-    });
+    data[data_index].checkPoints.asMap().forEach(
+      (index, element) {
+        if (!DateTime.now().difference(element.untilDate).isNegative) {
+          afterTodayIndex++;
+        }
+      },
+    );
     super.initState();
   }
 
