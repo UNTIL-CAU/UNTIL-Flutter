@@ -42,8 +42,11 @@ dependencies:
   firebase_auth: ^4.1.3
   modal_progress_hud_nsn: ^0.3.0
   cloud_firestore: ^4.1.0
+  intl: ^0.17.0
+  flutter_calendar_week:
+    path: packages/flutter_calendar_week/
+
   flutter_local_notifications: ^9.4.0
-  flutter_calendar_week: ^3.0.0
   timelines: ^0.1.0
 
 dev_dependencies:

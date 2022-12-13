@@ -5,6 +5,7 @@ import 'package:until/styles.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:until/view/screen/CheckPointPage.dart';
 import 'package:until/view/screen/SignupPage.dart';
+import 'package:until/view/screen/ProgressPage.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
         ),
       ),
-      home: const CheckPointPage(),
+      home: const ProgressPage(),
     );
   }
 }
