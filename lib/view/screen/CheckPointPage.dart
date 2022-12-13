@@ -38,6 +38,7 @@ final List<Data_Task> data = [
       CheckPoint('회의', true, false, DateTime(2022, 10, 5)),
       CheckPoint('프론트', true, false, DateTime(2022, 10, 11)),
       CheckPoint('서버', false, false, DateTime(2022, 12, 13)),
+      CheckPoint('대본', false, false, DateTime(2022, 12, 13)),
       CheckPoint('연동', false, false, DateTime(2022, 12, 21)),
       CheckPoint('발표', false, false, DateTime(2022, 12, 27))
     ],
@@ -104,7 +105,6 @@ class _CheckPointPageState extends State<CheckPointPage> {
           children: const [
             Progress(),
             CheckPoints(),
-            //CheckPointList()
           ],
         ),
       ),
@@ -227,6 +227,23 @@ class CheckPoints extends StatefulWidget {
 
 class _CheckPointsState extends State<CheckPoints> {
   String nowDate = DateFormat('MMMM dd').format(DateTime.now());
+  int untilTodayIndex = 0;
+  int afterTodayIndex = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    untilTodayIndex = data[data_index].checkPoints.indexWhere(
+          (element) =>
+              nowDate == DateFormat('MMMM dd').format(element.untilDate),
+        );
+    data[data_index].checkPoints.asMap().forEach((index, element) {
+      if (nowDate == DateFormat('MMMM dd').format(element.untilDate)) {
+        afterTodayIndex = index + 1;
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -235,17 +252,6 @@ class _CheckPointsState extends State<CheckPoints> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 40,
-            margin: const EdgeInsets.fromLTRB(45, 20, 0, 0),
-            child: const Text(
-              "OverDue",
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
           Flexible(
             fit: FlexFit.tight,
             child: Timeline.tileBuilder(
@@ -260,87 +266,141 @@ class _CheckPointsState extends State<CheckPoints> {
               ),
               builder: TimelineTileBuilder.connected(
                 contentsBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 12,
-                  ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Container(
-                      margin: const EdgeInsets.only(
-                        left: 10,
-                        right: 30,
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 25,
-                        vertical: 17,
-                      ),
-                      height: 100,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color:
-                                data[data_index].checkPoints[index].isFinished
-                                    ? Colors.black12
-                                    : mainColor,
-                            width: 2),
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.white,
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          setState(
-                            () {
-                              data[data_index].checkPoints[index].isFinished =
-                                  !data[data_index]
-                                      .checkPoints[index]
-                                      .isFinished;
-                            },
-                          );
-                          print(nowDate);
-                          print(DateFormat('MMMM dd').format(
-                              data[data_index].checkPoints[index].untilDate));
-                          print(nowDate ==
-                              DateFormat('MMMM dd').format(data[data_index]
-                                  .checkPoints[index]
-                                  .untilDate));
-                        },
-                        child: SizedBox(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Text(
-                                data[data_index].checkPoints[index].name,
-                                style: const TextStyle(
-                                  color: Colors.black87,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 12,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Visibility(
+                          //OVERDUE
+                          visible: (index == 0),
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(10, 20, 20, 20),
+                            child: Text(
+                              'OverDue',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
                               ),
-                              Text(
-                                'UNTIL ${DateFormat('MMMM dd').format(data[data_index].checkPoints[index].untilDate)}',
-                                style: const TextStyle(
-                                  color: mainColor,
-                                ),
-                              ),
-                              data[data_index].checkPoints[index].isFinished
-                                  ? const Padding(
-                                      padding: EdgeInsets.only(top: 5),
-                                      child: Text("finished",
-                                          textAlign: TextAlign.end,
-                                          style: TextStyle(
-                                            color: Colors.black38,
-                                          )))
-                                  : const Text("")
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                ),
+                        Visibility(
+                          //UNTIL TODAY
+                          visible: (index == untilTodayIndex),
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(10, 20, 20, 20),
+                            child: Text(
+                              'UNTIL Today',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          //NEXT
+                          visible: (index == afterTodayIndex),
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(10, 20, 20, 20),
+                            child: Text(
+                              'NEXT Checkpoints',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                              left: 10,
+                              right: 30,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 25,
+                              vertical: 17,
+                            ),
+                            height: 100,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: data[data_index]
+                                          .checkPoints[index]
+                                          .isFinished
+                                      ? Colors.black12
+                                      : mainColor,
+                                  width: 2),
+                              borderRadius: BorderRadius.circular(15),
+                              color: Colors.white,
+                            ),
+                            child: InkWell(
+                              onTap: () {
+                                setState(
+                                  () {
+                                    data[data_index]
+                                            .checkPoints[index]
+                                            .isFinished =
+                                        !data[data_index]
+                                            .checkPoints[index]
+                                            .isFinished;
+                                  },
+                                );
+                              },
+                              child: SizedBox(
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Text(
+                                      data[data_index].checkPoints[index].name,
+                                      style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      'UNTIL ${DateFormat('MMMM dd').format(data[data_index].checkPoints[index].untilDate)}',
+                                      style: const TextStyle(
+                                        color: mainColor,
+                                      ),
+                                    ),
+                                    data[data_index]
+                                            .checkPoints[index]
+                                            .isFinished
+                                        ? const Padding(
+                                            padding: EdgeInsets.only(top: 5),
+                                            child: Text("finished",
+                                                textAlign: TextAlign.end,
+                                                style: TextStyle(
+                                                  color: Colors.black38,
+                                                )))
+                                        : const Text("")
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
                 connectorBuilder: (context, index, type) =>
                     const SolidLineConnector(),
                 nodePositionBuilder: (context, index) => 0.12,
+                indicatorPositionBuilder: (context, index) {
+                  if (index == afterTodayIndex ||
+                      index == 0 ||
+                      index == untilTodayIndex) return 0.7;
+                  return 0.5;
+                },
                 indicatorBuilder: (context, index) {
                   {
                     bool finish =
