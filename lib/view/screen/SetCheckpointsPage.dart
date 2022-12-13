@@ -40,7 +40,7 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
   final ScrollController _scrollController = ScrollController();
 
   final _spfManager = SharedPrefManager();
-  String refIndex = '';
+  late int refIndex;
   Future? future;
 
   Future<String?> initInfo() async {
@@ -56,8 +56,7 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
         .collection('task')
         .get()
         .then((QuerySnapshot ss) {
-      //checkpoint의 ref값을 6자리의 숫자로 바꾼다.
-      refIndex = ss.docs.length.toString().padLeft(6, '0');
+      refIndex = ss.docs.length;
     });
   }
 
@@ -192,9 +191,9 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                                                   .read<TaskProvider>()
                                                   .length;
                                           i++) {
-                                        String refString =
-                                            ((int.parse(refIndex) + i))
-                                                .toString();
+                                        String refString = ((refIndex + i))
+                                            .toString()
+                                            .padLeft(12, '0');
                                         final newCheckpointRef = db
                                             .collection('checkpoint')
                                             .doc(refString);
