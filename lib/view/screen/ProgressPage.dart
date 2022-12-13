@@ -7,48 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:until/view/screen/SignupPage.dart';
 import 'MainPage.dart';
 
-final List<TaskData> data = [
-  TaskData(
-      '캡스톤 디자인',
-      DateTime(2022, 9, 1),
-      DateTime(2022, 12, 25),
-      ['팀 프로젝트', '앱 개발'],
-      [
-        CheckPoint('프론트', true, false, DateTime(2022, 10, 11)),
-        CheckPoint('서버', false, true, DateTime(2022, 11, 21)),
-        CheckPoint('연동', false, true, DateTime(2022, 12, 11)),
-        CheckPoint('연동', false, true, DateTime(2022, 12, 13)),
-        CheckPoint('연동', false, true, DateTime(2022, 12, 15)),
-        CheckPoint('연동', false, true, DateTime(2022, 12, 15)),
-        CheckPoint('연동', false, true, DateTime(2022, 12, 15)),
-        CheckPoint('연동', false, true, DateTime(2022, 12, 15))
-      ],
-      true),
-  TaskData(
-      '모바일 앱 개발',
-      DateTime(2022, 10, 2),
-      DateTime(2022, 12, 20),
-      ['팀 프로젝트', '앱 개발'],
-      [
-        CheckPoint('기획', true, true, DateTime(2022, 10, 03)),
-        CheckPoint('디자인', true, false, DateTime(2022, 11, 28)),
-        CheckPoint('앱만들기', false, true, DateTime(2022, 12, 12)),
-        CheckPoint('연동', false, true, DateTime(2022, 12, 15)),
-      ],
-      true),
-  TaskData(
-      '최종 보고서',
-      DateTime(2022, 12, 13),
-      DateTime(2022, 12, 31),
-      ['리포트', '발표'],
-      [
-        CheckPoint('서론', false, false, DateTime(2022, 12, 14)),
-        CheckPoint('본론', false, false, DateTime(2022, 12, 20)),
-        CheckPoint('연동', false, true, DateTime(2022, 12, 15)),
-      ],
-      false),
-];
-
 class ProgressPage extends StatelessWidget {
   const ProgressPage({Key? key}) : super(key: key);
 
@@ -233,7 +191,7 @@ Widget TaskContent(TaskData task) => Column(
           padding: const EdgeInsets.symmetric(
               vertical: 2), //apply padding to all four sides
           child: Text(
-            '${DateFormat('MMMM dd').format(task.startDate)} ~ ${DateFormat('MMMM dd').format(task.endDate)}',
+            '${DateFormat('MMMM dd').format(task.startDate.toDate())} ~ ${DateFormat('MMMM dd').format(task.endDate.toDate())}',
             style: const TextStyle(color: saturdayColor),
           ),
         ),

@@ -1,54 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:until/model/task_data.dart';
 import 'package:until/styles.dart';
 import 'package:intl/intl.dart';
 import 'package:timelines/timelines.dart';
 import 'MainPage.dart';
-
-final List<TaskData> data = [
-  TaskData(
-    '캡스톤 디자인',
-    DateTime(2022, 9, 1),
-    DateTime(2022, 12, 25),
-    ['팀 프로젝트', '앱 개발'],
-    [
-      CheckPoint('기획', true, false, DateTime(2022, 9, 10)),
-      CheckPoint('디자인', true, false, DateTime(2022, 9, 18)),
-      CheckPoint('구성', true, true, DateTime(2022, 9, 21)),
-      CheckPoint('회의', true, false, DateTime(2022, 10, 5)),
-      CheckPoint('프론트', true, false, DateTime(2022, 10, 11)),
-      CheckPoint('서버', false, false, DateTime(2022, 12, 13)),
-      CheckPoint('대본', false, false, DateTime(2022, 12, 13)),
-      CheckPoint('연동', false, false, DateTime(2022, 12, 21)),
-      CheckPoint('발표', false, false, DateTime(2022, 12, 27))
-    ],
-    false,
-  ),
-  TaskData(
-    '모바일 앱 개발',
-    DateTime(2022, 10, 2),
-    DateTime(2022, 12, 20),
-    ['팀 프로젝트', '앱 개발'],
-    [
-      CheckPoint('기획', true, true, DateTime(2022, 10, 3)),
-      CheckPoint('디자인', true, false, DateTime(2022, 11, 28)),
-      CheckPoint('앱만들기', false, true, DateTime(2022, 12, 12))
-    ],
-    true,
-  ),
-  TaskData(
-    '최종 보고서',
-    DateTime(2022, 12, 13),
-    DateTime(2022, 12, 31),
-    ['리포트', '발표'],
-    [
-      CheckPoint('서론', false, false, DateTime(2022, 12, 14)),
-      CheckPoint('본론', false, false, DateTime(2022, 12, 20)),
-      CheckPoint('결론', false, false, DateTime(2022, 12, 27))
-    ],
-    false,
-  ),
-];
 
 const int data_index = 0;
 
@@ -121,7 +77,7 @@ class _ProgressState extends State<Progress> {
               vertical: 2,
             ), //apply padding to all four sides
             child: Text(
-              '${DateFormat('MMMM dd').format(data[data_index].startDate)} ~ ${DateFormat('MMMM dd').format(data[data_index].endDate)}',
+              '${DateFormat('MMMM dd').format(data[data_index].startDate.toDate())} ~ ${DateFormat('MMMM dd').format(data[data_index].endDate.toDate())}',
               style: const TextStyle(color: saturdayColor),
             ),
           ),
@@ -140,10 +96,10 @@ class _ProgressState extends State<Progress> {
               height: 20,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: data[data_index].tags.length,
+                itemCount: data[data_index].tag.length,
                 itemBuilder: (BuildContext context, int indexTag) {
                   return Text(
-                    '#${data[data_index].tags[indexTag]} ',
+                    '#${data[data_index].tag[indexTag]} ',
                     style: const TextStyle(color: Colors.black54, fontSize: 12),
                   );
                 },
@@ -215,10 +171,10 @@ class _CheckPointsState extends State<CheckPoints> {
     // TODO: implement initState
     untilTodayIndex = data[data_index].checkPoints.indexWhere(
           (element) =>
-              nowDate == DateFormat('MMMM dd').format(element.untilDate),
+              nowDate == DateFormat('MMMM dd').format(element.untilDate.toDate()),
         );
     data[data_index].checkPoints.asMap().forEach((index, element) {
-      if (nowDate == DateFormat('MMMM dd').format(element.untilDate)) {
+      if (nowDate == DateFormat('MMMM dd').format(element.untilDate.toDate())) {
         afterTodayIndex = index + 1;
       }
     });
@@ -348,7 +304,7 @@ class _CheckPointsState extends State<CheckPoints> {
                                       ),
                                     ),
                                     Text(
-                                      'UNTIL ${DateFormat('MMMM dd').format(data[data_index].checkPoints[index].untilDate)}',
+                                      'UNTIL ${DateFormat('MMMM dd').format(data[data_index].checkPoints[index].untilDate.toDate())}',
                                       style: const TextStyle(
                                         color: mainColor,
                                       ),
