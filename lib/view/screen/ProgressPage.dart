@@ -1,33 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
+import 'package:until/model/task_data.dart';
 import 'package:until/styles.dart';
 import 'package:intl/intl.dart';
 import 'package:until/view/screen/SignupPage.dart';
 import 'MainPage.dart';
 
-class Data_Task {
-  String name;
-  DateTime startDate;
-  DateTime endDate;
-  List<String> tags;
-  List<CheckPoint> checkPoints;
-  bool imminent;
-
-  Data_Task(this.name, this.startDate, this.endDate, this.tags,
-      this.checkPoints, this.imminent);
-}
-
-class CheckPoint {
-  String name;
-  bool isFinished;
-  bool isDelayed;
-  DateTime untilDate;
-
-  CheckPoint(this.name, this.isFinished, this.isDelayed, this.untilDate);
-}
-
-final List<Data_Task> data = [
-  Data_Task(
+final List<TaskData> data = [
+  TaskData(
       '캡스톤 디자인',
       DateTime(2022, 9, 1),
       DateTime(2022, 12, 25),
@@ -43,7 +24,7 @@ final List<Data_Task> data = [
         CheckPoint('연동', false, true, DateTime(2022, 12, 15))
       ],
       true),
-  Data_Task(
+  TaskData(
       '모바일 앱 개발',
       DateTime(2022, 10, 2),
       DateTime(2022, 12, 20),
@@ -55,7 +36,7 @@ final List<Data_Task> data = [
         CheckPoint('연동', false, true, DateTime(2022, 12, 15)),
       ],
       true),
-  Data_Task(
+  TaskData(
       '최종 보고서',
       DateTime(2022, 12, 13),
       DateTime(2022, 12, 31),
@@ -186,7 +167,7 @@ class _ProgressListState extends State<ProgressList> {
   }
 }
 
-Widget TaskItem(Data_Task task, BuildContext context) => Container(
+Widget TaskItem(TaskData task, BuildContext context) => Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       padding: const EdgeInsets.fromLTRB(20, 15, 20, 13),
       height: 161,
@@ -245,7 +226,7 @@ Widget TaskItem(Data_Task task, BuildContext context) => Container(
       ),
     );
 
-Widget TaskContent(Data_Task task) => Column(
+Widget TaskContent(TaskData task) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(

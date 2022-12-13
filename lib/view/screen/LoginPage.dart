@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:until/shared_preference.dart';
 
 import 'MainPage.dart';
 import 'ProgressPage.dart';
@@ -26,6 +28,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   bool showSpinner = false;
   final _authentication = FirebaseAuth.instance;
+  final _spfManager = SharedPrefManager();
   final _loginKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
@@ -106,6 +109,7 @@ class _LoginFormState extends State<LoginForm> {
                                 setState(() {
                                   showSpinner = false;
                                 });
+                                _spfManager.setUserId(currentUser.user!.uid);
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const ProgressPage()));
                               }
                             }
