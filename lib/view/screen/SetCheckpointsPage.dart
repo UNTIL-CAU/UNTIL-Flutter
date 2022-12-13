@@ -128,19 +128,13 @@ class _SetCheckpointsFormState extends State<SetCheckpointsForm> {
                           child: ElevatedButton(
                             onPressed: () async {
                               if (_setCheckpointKey.currentState!.validate()) {
-                                print(_checkpoints[0].name);
-                                print(_checkpoints[0].date);
-                                final task = <String, String>{
-                                  "name": "Los Angeles",
-                                  "state": "CA",
-                                  "country": "USA"
-                                };
-                                db
-                                    .collection("cities")
-                                    .doc("LA")
-                                    .set(task, SetOptions(merge: true))
-                                    .onError((e, _) =>
-                                        print("Error writing documnt: $e"));
+                                /**
+                                 * _checkpoints[index].name, date => checkpoints 들의 이름, 날짜
+                                 * _checkpoints[index].task. ~ => checkpoints들을 갖고 있는 task들의 data들
+                                 * 
+                                 * print(_checkpoints[0].name);
+                                 * print(_checkpoints[0].date);
+                                 */
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
