@@ -33,12 +33,13 @@ class _TaskItemState extends State<TaskItem> {
                   flex: 1,
                   child: IconButton(
                     onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => const CheckPointPage(),
-                      //   ), //CheckPoint 페이지로
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              CheckPointPage(name: widget.task.name),
+                        ), //CheckPoint 페이지로
+                      );
                     },
                     icon: const Icon(
                       Icons.keyboard_arrow_right,
@@ -61,14 +62,20 @@ class _TaskItemState extends State<TaskItem> {
                     itemCount: widget.task.checkpoints,
                     itemBuilder: (context, index) {
                       return Padding(
-                        padding: EdgeInsets.only(left: 90 / (widget.task.checkpoints)),
+                        padding: EdgeInsets.only(
+                            left: 90 / (widget.task.checkpoints)),
                         child: Container(
                           width: 10.0,
                           height: 10.0,
                           decoration: BoxDecoration(
-                            color: index < widget.task.finishedCheckpoints ? (saturdayColor) : null,
+                            color: index < widget.task.finishedCheckpoints
+                                ? (saturdayColor)
+                                : null,
                             shape: BoxShape.circle,
-                            border: Border.all(color: saturdayColor, width: 2,),
+                            border: Border.all(
+                              color: saturdayColor,
+                              width: 2,
+                            ),
                           ),
                         ),
                       );
@@ -83,4 +90,3 @@ class _TaskItemState extends State<TaskItem> {
     );
   }
 }
-
