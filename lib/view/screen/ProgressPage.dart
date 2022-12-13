@@ -2,41 +2,54 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
+import 'package:provider/provider.dart';
 import 'package:until/model/task_data.dart';
 import 'package:until/shared_preference.dart';
 import 'package:until/styles.dart';
 import 'package:until/view/widget/task_item.dart';
 import 'AddTaskPage.dart';
 
-class ProgressPage extends StatelessWidget {
-  const ProgressPage({Key? key}) : super(key: key);
+class dayChange with ChangeNotifier {
+  DateTime _selectedDate = DateTime.now();
+  DateTime get selectedDate => _selectedDate;
 
-  @override
+  void set(DateTime date) {
+    _selectedDate = date;
+    notifyListeners();
+  }
+}
+
+class ProgressPage extends StatelessWidget {
+  const ProgressPage({super.key});
+
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('TODAY'),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const AddTaskPage()), //Add Task 페이지로
-                );
-              },
-              icon: const Icon(Icons.add),
-            )
-          ],
-        ),
-        body: Stack(
-          children: const [
-            ProgressList(),
-            TopCalender(),
-          ],
-        ));
+    return ChangeNotifierProvider(
+      create: (context) => dayChange(),
+      child: Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: const Text('TODAY'),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            const AddTaskPage()), //Add Task 페이지로
+                  );
+                },
+                icon: const Icon(Icons.add),
+              )
+            ],
+          ),
+          body: Stack(
+            children: const [
+              ProgressList(),
+              TopCalender(),
+            ],
+          )),
+    );
   }
 }
 
@@ -50,6 +63,7 @@ class TopCalender extends StatefulWidget {
 class _TopCalenderState extends State<TopCalender> {
   TextStyle untilDateStyle = const TextStyle(
       color: mainColor, fontSize: 16, fontWeight: FontWeight.w600);
+
   final CalendarWeekController _controller = CalendarWeekController();
 
   @override
@@ -79,10 +93,10 @@ class _TopCalenderState extends State<TopCalender> {
       weekendsIndexes: const [6], //주말 하이라이트는 일요일만
 
       onDatePressed: (DateTime datetime) {
-        // Do something
+        context.read<dayChange>().set(datetime);
       },
       onDateLongPressed: (DateTime datetime) {
-        // Do something
+        context.read<dayChange>().set(datetime);
       },
       onWeekChanged: () {
         // Do something
@@ -102,7 +116,7 @@ class _ProgressListState extends State<ProgressList> {
   final _spfManager = SharedPrefManager();
   Future? future;
 
-  Future<String?> initInfo() async{
+  Future<String?> initInfo() async {
     return await _spfManager.getUserId();
   }
 
@@ -117,35 +131,53 @@ class _ProgressListState extends State<ProgressList> {
     return FutureBuilder(
       future: future,
       builder: (context, userId) {
-        if (userId.data == null){
+        if (userId.data == null) {
           return const Center(child: CircularProgressIndicator());
         }
+        print(context.watch<dayChange>()._selectedDate);
         return ListView(
           children: [
-            const SizedBox(height: 100,),
+            const SizedBox(
+              height: 100,
+            ),
             const Padding(
               padding: EdgeInsets.fromLTRB(20, 20, 30, 10),
               child: Text(
                 'Currently in progress',
                 style: TextStyle(
-                  color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.left,
               ),
             ),
             StreamBuilder(
-              stream: FirebaseFirestore.instance.collection('task').where('userId', isEqualTo: userId.data!).snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection('task')
+                  .where('userId', isEqualTo: userId.data!)
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                final docs = snapshot.data!.docs;
+                var docs = snapshot.data!.docs;
+
+                docs.removeWhere((element) => !(context
+                        .read<dayChange>()
+                        ._selectedDate
+                        .isAfter(element['start'].toDate()) &&
+                    context
+                        .read<dayChange>()
+                        ._selectedDate
+                        .isBefore(element['end'].toDate())));
+
                 if (docs.isEmpty) {
                   return const Text("sorry, there is no task");
                 }
                 return ListView.builder(
-                  shrinkWrap : true,
-                  physics : const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: docs.length,
                   padding: const EdgeInsets.all(8),
                   itemBuilder: (context, index) {
