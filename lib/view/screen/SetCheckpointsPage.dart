@@ -263,6 +263,26 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                                                     const Duration(days: 1))
                                                 .day ==
                                             Timestamp.now().toDate().day) {
+                                          // imminent 하기
+                                          await db
+                                              .collection('task')
+                                              .where('userId',
+                                                  isEqualTo: userId.data)
+                                              .where('name',
+                                                  isEqualTo: _task.name)
+                                              .get()
+                                              .then(
+                                            (QuerySnapshot ss) {
+                                              db
+                                                  .collection('task')
+                                                  .doc(ss.docs[0].id)
+                                                  .update(
+                                                {
+                                                  'imminent': true,
+                                                },
+                                              );
+                                            },
+                                          );
                                           LocalNotification.notificationNow(
                                               "체크포인트가 임박했습니다!",
                                               "다음 체크 포인트가 1일 남았습니다.\n어서 확인해보세요!");
