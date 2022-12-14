@@ -52,12 +52,6 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
     super.initState();
     context.read<TaskProvider>().setTask(widget.task);
     future = initInfo();
-    FirebaseFirestore.instance
-        .collection('task')
-        .get()
-        .then((QuerySnapshot ss) {
-      refIndex = ss.docs.length;
-    });
   }
 
   @override
@@ -71,7 +65,9 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
         future: future,
         builder: (context, userId) {
           if (userId.data == null) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
           return SafeArea(
             child: Padding(
@@ -166,6 +162,12 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                                   onPressed: () async {
                                     if (_setCheckpointKey.currentState!
                                         .validate()) {
+                                      await FirebaseFirestore.instance
+                                          .collection('checkpoint')
+                                          .get()
+                                          .then((QuerySnapshot ss) {
+                                        refIndex = ss.docs.length + 1;
+                                      });
                                       final newTaskRef =
                                           db.collection('task').doc();
                                       final _task =
@@ -191,7 +193,7 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                                                   .read<TaskProvider>()
                                                   .length;
                                           i++) {
-                                        String refString = ((refIndex + i))
+                                        String refString = (refIndex + i)
                                             .toString()
                                             .padLeft(12, '0');
                                         final newCheckpointRef = db

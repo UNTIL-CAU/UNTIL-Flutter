@@ -117,26 +117,3 @@ class _ProgressState extends State<Progress> {
     );
   }
 }
-/** 
- * Index 참조
-class _CheckPointsState extends State<CheckPoints> {
-  String nowDate = DateFormat('MMMM dd').format(DateTime.now());
-  int untilTodayIndex = 0;
-  int afterTodayIndex = 0;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    untilTodayIndex = data[data_index].checkPoints.indexWhere(
-          (element) =>
-              nowDate ==
-              DateFormat('MMMM dd').format(element.untilDate.toDate()),
-        );
-    data[data_index].checkPoints.asMap().forEach((index, element) {
-      if (nowDate == DateFormat('MMMM dd').format(element.untilDate.toDate())) {
-        afterTodayIndex = index + 1;
-      }
-    });
-    super.initState();
-  }
-*/

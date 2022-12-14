@@ -19,6 +19,10 @@ class CheckPoints extends StatefulWidget {
 }
 
 class _CheckPointsState extends State<CheckPoints> {
+  int untilTodayIndex = 9999;
+  int nextIndex = 9999;
+  int overDueIndex = 9999;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -35,6 +39,22 @@ class _CheckPointsState extends State<CheckPoints> {
         if (docs.isEmpty) {
           return const Text("sorry, there is no checkPoint!");
         }
+        untilTodayIndex = docs.indexWhere((element) =>
+            DateFormat('MMMM dd').format(DateTime.now()) ==
+            DateFormat('MMMM dd').format(element['date'].toDate()));
+        // -1 if not there is today
+        if (untilTodayIndex == -1) {
+          //today index가 없다면
+        }
+        nextIndex = docs.indexWhere((element) =>
+            DateTime.now().difference(element['date'].toDate()).isNegative);
+
+        if (untilTodayIndex == 0 || nextIndex == 0) {
+          overDueIndex = -1;
+        } else {
+          overDueIndex = 0;
+        }
+
         // Calculate Today Index, after Today index
         return Flexible(
           child: Timeline.tileBuilder(
@@ -58,7 +78,7 @@ class _CheckPointsState extends State<CheckPoints> {
                     children: [
                       Visibility(
                         //OVERDUE
-                        visible: (index == 0),
+                        visible: (index == overDueIndex),
                         child: const Padding(
                           padding: EdgeInsets.fromLTRB(10, 0, 20, 20),
                           child: Text(
@@ -73,8 +93,7 @@ class _CheckPointsState extends State<CheckPoints> {
                       ),
                       Visibility(
                         //UNTIL TODAY
-                        //TODO: calculate todayIndex
-                        visible: (index == 2),
+                        visible: (index == untilTodayIndex),
                         child: const Padding(
                           padding: EdgeInsets.fromLTRB(10, 20, 20, 20),
                           child: Text(
@@ -89,8 +108,7 @@ class _CheckPointsState extends State<CheckPoints> {
                       ),
                       Visibility(
                         //NEXT
-                        //TODO : calculate nextIndex
-                        visible: (index == DateTime.now()),
+                        visible: (index == nextIndex),
                         child: const Padding(
                           padding: EdgeInsets.fromLTRB(10, 20, 20, 20),
                           child: Text(
@@ -215,10 +233,9 @@ class _CheckPointsState extends State<CheckPoints> {
                   const SolidLineConnector(),
               nodePositionBuilder: (context, index) => 0.12,
               indicatorPositionBuilder: (context, index) {
-                // TODO : 인덱스값 받아서 position 설정하기
-                // if (index == afterTodayIndex ||
-                //     index == 0 ||
-                //     index == untilTodayIndex) return 0.7;
+                if (index == nextIndex ||
+                    index == 0 ||
+                    index == untilTodayIndex) return 0.7;
                 return 0.5;
               },
               indicatorBuilder: (context, index) {
