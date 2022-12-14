@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:until/model/task_data.dart';
 import 'package:until/styles.dart';
@@ -15,6 +16,40 @@ class TaskItem extends StatefulWidget {
 class _TaskItemState extends State<TaskItem> {
   @override
   Widget build(BuildContext context) {
+    Widget ok_btn = Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        TextButton(
+          child: Text("OK"),
+          onPressed: () {
+            FirebaseFirestore.instance
+                .collection('task')
+                .where('name', isEqualTo: widget.task.name)
+                .get()
+                .then(
+              (QuerySnapshot ss) {
+                FirebaseFirestore.instance
+                    .collection('task')
+                    .doc(ss.docs[0].id)
+                    .delete()
+                    .then(
+                      (doc) => print("deleted!"),
+                      onError: (e) => print("Error updating document $e"),
+                    );
+              },
+            );
+            Navigator.pop(context);
+          },
+        ),
+        TextButton(
+          child: Text("Cancel"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    );
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       padding: const EdgeInsets.fromLTRB(20, 15, 20, 13),
@@ -30,30 +65,57 @@ class _TaskItemState extends State<TaskItem> {
             children: [
               Expanded(flex: 7, child: TaskContent(task: widget.task)),
               Expanded(
-                  flex: 1,
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              CheckPointPage(name: widget.task.name),
-                        ), //CheckPoint 페이지로
-                      );
-                    },
-                    icon: const Icon(
-                      Icons.keyboard_arrow_right,
-                      size: 30,
-                    ),
-                  ))
+                flex: 1,
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            CheckPointPage(name: widget.task.name),
+                      ), //CheckPoint 페이지로
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.keyboard_arrow_right,
+                    size: 30,
+                  ),
+                ),
+              ),
             ],
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(
-                vertical: 1, horizontal: 15), //apply padding to all four sides
+            padding: const EdgeInsets.fromLTRB(
+                0, 1, 10, 1), //apply padding to all four sides
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 27),
+                  child: SizedBox(
+                    height: 10,
+                    child: IconButton(
+                      onPressed: () {
+                        AlertDialog alert = AlertDialog(
+                          title: Text("삭제하시겠습니까?"),
+                          content: Text("삭제 후 되돌릴 수 없습니다."),
+                          actions: <Widget>[ok_btn],
+                        );
+
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alert;
+                            });
+                      }, //TODO: 여기부터
+                      icon: const Icon(
+                        Icons.delete,
+                        color: mainColor,
+                        size: 25,
+                      ),
+                    ),
+                  ),
+                ),
+                Spacer(),
                 SizedBox(
                   height: 10,
                   child: ListView.builder(

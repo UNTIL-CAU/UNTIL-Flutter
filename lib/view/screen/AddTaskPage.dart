@@ -17,7 +17,7 @@ class AddTaskPage extends StatelessWidget {
         title: const Text('ADD TASK'),
       ),
       body: const AddTaskForm(),
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
     );
   }
 }
@@ -78,9 +78,6 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       }
                       return null;
                     },
-                  ),
-                  const SizedBox(
-                    height: 12,
                   ),
                   const Text(
                     "Starts",
@@ -177,9 +174,6 @@ class _AddTaskFormState extends State<AddTaskForm> {
                         print("Not selected");
                       }
                     },
-                  ),
-                  const SizedBox(
-                    height: 12,
                   ),
                   const Text(
                     "Tag",
