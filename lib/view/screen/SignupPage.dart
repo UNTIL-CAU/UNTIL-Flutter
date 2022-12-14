@@ -14,7 +14,8 @@ class SignupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-        body: SignupForm()
+      resizeToAvoidBottomInset: true,
+      body: SignupForm(),
     );
   }
 }
@@ -34,14 +35,15 @@ class _SignupFormState extends State<SignupForm> {
   String email = '';
   String password = '';
   String userName = '';
-  
+
   Future<void> checkUser() async {
     if (await _spfManager.isThereUserData()) {
       Navigator.pop(context);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const ProgressPage()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const ProgressPage()));
     }
   }
-  
+
   @override
   void initState() {
     LocalNotification.requestPermission();
@@ -53,142 +55,160 @@ class _SignupFormState extends State<SignupForm> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: ModalProgressHUD(
-          inAsyncCall: showSpinner,
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Form(
-                key: _loginKey,
-                child: ScrollConfiguration(
-                  behavior: const ScrollBehavior().copyWith(overscroll: false),
-                  child: ListView(
+      inAsyncCall: showSpinner,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+            key: _loginKey,
+            child: ScrollConfiguration(
+              behavior: const ScrollBehavior().copyWith(overscroll: false),
+              child: ListView(
+                children: [
+                  const SizedBox(
+                    height: 100,
+                  ),
+                  const Text(
+                    "UNTIL",
+                    style: TextStyle(fontSize: 32),
+                  ),
+                  const SizedBox(
+                    height: 80,
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Email',
+                      helperText: '',
+                    ),
+                    onSaved: (value) {
+                      email = value!;
+                    },
+                    validator: (value) {
+                      if (value == null) {
+                        return "Please enter an email.";
+                      } else if (value.isEmpty) {
+                        return "Please enter an email";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  TextFormField(
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Password',
+                      helperText: '',
+                    ),
+                    onSaved: (value) {
+                      password = value!;
+                    },
+                    validator: (value) {
+                      if (value == null) {
+                        return "Please enter a password.";
+                      } else if (value.length < 6) {
+                        return "Please enter at least 6 characters.";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Name',
+                      helperText: '',
+                    ),
+                    onSaved: (value) {
+                      userName = value!;
+                    },
+                    validator: (value) {
+                      if (value == null) {
+                        return "Please enter an email.";
+                      } else if (value.isEmpty) {
+                        return "Please enter your name";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    SizedBox(
+                      width: 110,
+                      height: 40,
+                      child: ElevatedButton(
+                          onPressed: () async {
+                            try {
+                              if (_loginKey.currentState!.validate()) {
+                                _loginKey.currentState!.save();
+                                setState(() {
+                                  showSpinner = true;
+                                });
+                                final newUser = await _authentication
+                                    .createUserWithEmailAndPassword(
+                                        email: email, password: password);
+                                await FirebaseFirestore.instance
+                                    .collection('user')
+                                    .doc(newUser.user!.uid)
+                                    .set({
+                                  'userName': userName,
+                                  'email': email,
+                                });
+                                if (newUser.user != null) {
+                                  _loginKey.currentState!.reset();
+                                  if (!mounted) return;
+                                  setState(() {
+                                    showSpinner = false;
+                                  });
+                                  _spfManager.setUserId(newUser.user!.uid);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ProgressPage()));
+                                }
+                              }
+                            } catch (e) {
+                              print(e);
+                            }
+                          },
+                          child: const Text('Enter')),
+                    ),
+                  ]),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 100,),
                       const Text(
-                        "UNTIL",
-                        style: TextStyle(fontSize: 32),
+                        "Already have account?",
+                        style: TextStyle(fontSize: 12),
                       ),
-                      const SizedBox(height: 80,),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Email',
-                          helperText: '',
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginPage()));
+                        },
+                        child: const Text(
+                          "Sign In",
+                          style: TextStyle(fontSize: 12),
                         ),
-                        onSaved: (value) {
-                          email = value!;
-                        },
-                        validator: (value) {
-                          if (value == null) {
-                            return "Please enter an email.";
-                          } else if (value.isEmpty) {
-                            return "Please enter an email";
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 12,),
-                      TextFormField(
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Password',
-                          helperText: '',
-                        ),
-                        onSaved: (value) {
-                          password = value!;
-                        },
-                        validator: (value) {
-                          if (value == null) {
-                            return "Please enter a password.";
-                          } else if (value.length < 6) {
-                            return "Please enter at least 6 characters.";
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 12,),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Name',
-                          helperText: '',
-                        ),
-                        onSaved: (value) {
-                          userName = value!;
-                        },
-                        validator: (value) {
-                          if (value == null) {
-                            return "Please enter an email.";
-                          } else if (value.isEmpty) {
-                            return "Please enter your name";
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 50,),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 110,
-                              height: 40,
-                              child: ElevatedButton(
-                                  onPressed: () async {
-                                    try {
-                                      if(_loginKey.currentState!.validate()) {
-                                        _loginKey.currentState!.save();
-                                        setState(() {
-                                          showSpinner = true;
-                                        });
-                                        final newUser =
-                                        await _authentication.createUserWithEmailAndPassword(email: email, password: password);
-                                        await FirebaseFirestore.instance
-                                            .collection('user')
-                                            .doc(newUser.user!.uid)
-                                            .set({'userName': userName, 'email': email,});
-                                        if (newUser.user != null) {
-                                          _loginKey.currentState!.reset();
-                                          if (!mounted) return;
-                                          setState(() {
-                                            showSpinner = false;
-                                          });
-                                          _spfManager.setUserId(newUser.user!.uid);
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ProgressPage()));
-                                        }
-                                      }
-                                    } catch (e) {
-                                      print(e);
-                                    }
-                                  },
-                                  child: const Text('Enter')),
-                            ),
-                          ]
-                      ),
-                      const SizedBox(height: 30,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Already have account?",
-                            style: TextStyle(fontSize: 12),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
-                            },
-                            child: const Text(
-                              "Sign In",
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          )
-                        ],
                       )
                     ],
-                  ),
-                )
-            ),
-          ),
-        )
-    );
+                  )
+                ],
+              ),
+            )),
+      ),
+    ));
   }
 }

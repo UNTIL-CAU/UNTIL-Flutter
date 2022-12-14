@@ -17,7 +17,7 @@ class AddTaskPage extends StatelessWidget {
         title: const Text('ADD TASK'),
       ),
       body: const AddTaskForm(),
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
     );
   }
 }
@@ -115,8 +115,10 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       if (pickedDate != null) {
                         String formattedDate =
                             DateFormat("yyyy-MM-dd").format(pickedDate);
-                        setState(() {
-                            _startDateController.text = formattedDate.toString();
+                        setState(
+                          () {
+                            _startDateController.text =
+                                formattedDate.toString();
                             _start = Timestamp.fromDate(pickedDate);
                           },
                         );
@@ -147,7 +149,8 @@ class _AddTaskFormState extends State<AddTaskForm> {
                         return "Please select an end date.";
                       } else {
                         DateTime end = DateTime.parse(value);
-                        DateTime start = DateTime.parse(_startDateController.text);
+                        DateTime start =
+                            DateTime.parse(_startDateController.text);
                         if (end.isBefore(start)) {
                           return "The end date is faster than the start date";
                         } else {
@@ -175,12 +178,16 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       }
                     },
                   ),
-                  const SizedBox(height: 12,),
+                  const SizedBox(
+                    height: 12,
+                  ),
                   const Text(
                     "Tag",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(height: 8,),
+                  const SizedBox(
+                    height: 8,
+                  ),
                   TextFormField(
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -207,19 +214,22 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       onPressed: () async {
                         if (_addTaskKey.currentState!.validate()) {
                           _addTaskKey.currentState!.save();
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => SetCheckpointsPage(
-                              task: TaskData(
-                                name: _taskName,
-                                startDate: _start!,
-                                endDate: _end!,
-                                tag: _tag,
-                                imminent: false,
-                                checkpoints: 0,
-                                finishedCheckpoints: 0,
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SetCheckpointsPage(
+                                task: TaskData(
+                                  name: _taskName,
+                                  startDate: _start!,
+                                  endDate: _end!,
+                                  tag: _tag,
+                                  imminent: false,
+                                  checkpoints: 0,
+                                  finishedCheckpoints: 0,
+                                ),
                               ),
                             ),
-                          ),);
+                          );
                         }
                       },
                       child: const Text(

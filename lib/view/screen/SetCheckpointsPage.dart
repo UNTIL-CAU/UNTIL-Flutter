@@ -57,6 +57,7 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         centerTitle: true,
         title: const Text('SET CHECKPOINTS'),
@@ -313,7 +314,6 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
           );
         },
       ),
-      resizeToAvoidBottomInset: false,
     );
   }
 }

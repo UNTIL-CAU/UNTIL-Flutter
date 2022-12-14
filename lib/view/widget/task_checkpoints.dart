@@ -38,7 +38,14 @@ class _CheckPointsState extends State<CheckPoints> {
         }
         final docs = snapshot.data!.docs;
         if (docs.isEmpty) {
-          return const Text("sorry, there is no checkPoint!");
+          return const Padding(
+            padding: EdgeInsets.fromLTRB(0, 230, 0, 0),
+            child: Center(
+              child: Text(
+                "sorry, there is no checkPoint!",
+              ),
+            ),
+          );
         }
         untilTodayIndex = docs.indexWhere((element) =>
             DateFormat('MMMM dd').format(DateTime.now()) ==

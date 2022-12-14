@@ -37,6 +37,7 @@ class _CheckPointPageState extends State<CheckPointPage> {
           return const Center(child: CircularProgressIndicator());
         }
         return Scaffold(
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             centerTitle: true,
             title: const Text('Today'),

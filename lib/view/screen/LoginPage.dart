@@ -13,7 +13,8 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-        body: LoginForm()
+      resizeToAvoidBottomInset: true,
+      body: LoginForm(),
     );
   }
 }
@@ -35,20 +36,24 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Form(
+        child: ModalProgressHUD(
+      inAsyncCall: showSpinner,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
             key: _loginKey,
             child: ListView(
               children: [
-                const SizedBox(height: 100,),
+                const SizedBox(
+                  height: 100,
+                ),
                 const Text(
                   "UNTIL",
                   style: TextStyle(fontSize: 32),
                 ),
-                const SizedBox(height: 80,),
+                const SizedBox(
+                  height: 80,
+                ),
                 TextFormField(
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
@@ -67,7 +72,9 @@ class _LoginFormState extends State<LoginForm> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 12,),
+                const SizedBox(
+                  height: 12,
+                ),
                 TextFormField(
                   obscureText: true,
                   decoration: const InputDecoration(
@@ -87,22 +94,24 @@ class _LoginFormState extends State<LoginForm> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 50,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 110,
-                      height: 40,
-                      child: ElevatedButton(
+                const SizedBox(
+                  height: 50,
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  SizedBox(
+                    width: 110,
+                    height: 40,
+                    child: ElevatedButton(
                         onPressed: () async {
                           try {
-                            if(_loginKey.currentState!.validate()) {
+                            if (_loginKey.currentState!.validate()) {
                               _loginKey.currentState!.save();
                               setState(() {
                                 showSpinner = true;
                               });
-                              final currentUser = await _authentication.signInWithEmailAndPassword(email: email, password: password);
+                              final currentUser = await _authentication
+                                  .signInWithEmailAndPassword(
+                                      email: email, password: password);
                               if (currentUser.user != null) {
                                 _loginKey.currentState!.reset();
                                 if (!mounted) return;
@@ -111,7 +120,11 @@ class _LoginFormState extends State<LoginForm> {
                                 });
                                 _spfManager.setUserId(currentUser.user!.uid);
                                 Navigator.pop(context);
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const ProgressPage()));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ProgressPage()));
                               }
                             }
                           } on FirebaseAuthException catch (e) {
@@ -123,22 +136,20 @@ class _LoginFormState extends State<LoginForm> {
                             if (e.code == 'user-not-found') {
                               showToast("No user found for that email.");
                             } else if (e.code == 'wrong-password') {
-                              showToast("Wrong password provided for that user.");
+                              showToast(
+                                  "Wrong password provided for that user.");
                             } else {
                               showToast("Error: ${e.code}");
                             }
                           }
                         },
                         child: const Text('Enter')),
-                    ),
-                  ]
-                ),
+                  ),
+                ]),
               ],
-            )
-          ),
-        ),
-      )
-    );
+            )),
+      ),
+    ));
   }
 
   void showToast(String message) {

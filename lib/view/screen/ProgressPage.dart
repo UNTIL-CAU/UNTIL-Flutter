@@ -173,10 +173,13 @@ class _ProgressListState extends State<ProgressList> {
                         .isBefore(element['end'].toDate())));
 
                 if (docs.isEmpty) {
-                  return Center(
-                    child: Text(
-                      "Sorry, There is no task.\nPlease add a new task.",
-                      style: Theme.of(context).textTheme.bodySmall,
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 230, 0, 0),
+                    child: Center(
+                      child: Text(
+                        "Sorry, There is no task.\nPlease add a new task.",
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
                     ),
                   );
                 }
