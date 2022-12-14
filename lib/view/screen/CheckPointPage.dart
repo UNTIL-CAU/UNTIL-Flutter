@@ -4,7 +4,7 @@ import 'package:until/model/task_data.dart';
 import 'package:until/shared_preference.dart';
 import 'package:until/view/widget/task_item.dart';
 import 'package:until/view/widget/task_checkpoints.dart';
-import 'package:until/view/screen/AddTaskPage.dart';
+import 'SetCheckpointsPage.dart';
 
 class CheckPointPage extends StatefulWidget {
   final String name;
@@ -43,12 +43,33 @@ class _CheckPointPageState extends State<CheckPointPage> {
             title: const Text('Today'),
             actions: [
               IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AddTaskPage(),
-                    ),
+                onPressed: () async {
+                  await FirebaseFirestore.instance
+                      .collection('task')
+                      .where('userId', isEqualTo: userId.data)
+                      .where('name', isEqualTo: widget.name)
+                      .get()
+                      .then(
+                    (QuerySnapshot ss) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SetCheckpointsPage(
+                            task: TaskData(
+                              name: widget.name,
+                              startDate: ss.docs[0]['start'],
+                              endDate: ss.docs[0]['end'],
+                              tag: ss.docs[0]['tag'],
+                              imminent: ss.docs[0]['imminent'],
+                              checkpoints: ss.docs[0]['checkpoints'],
+                              finishedCheckpoints: ss.docs[0]
+                                  ['finishedCheckpoints'],
+                            ),
+                            isAdd: true,
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
                 icon: const Icon(Icons.add),

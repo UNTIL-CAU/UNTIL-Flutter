@@ -221,6 +221,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
                                   checkpoints: 0,
                                   finishedCheckpoints: 0,
                                 ),
+                                isAdd: false,
                               ),
                             ),
                           );

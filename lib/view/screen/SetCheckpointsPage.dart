@@ -11,14 +11,16 @@ import 'package:until/view/widget/checkpoint_setter.dart';
 
 class SetCheckpointsPage extends StatelessWidget {
   final TaskData task;
-  const SetCheckpointsPage({Key? key, required this.task}) : super(key: key);
+  final bool isAdd;
+  const SetCheckpointsPage({Key? key, required this.task, required this.isAdd})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => TaskProvider(),
       builder: (builder, child) {
-        return _SetCheckpointsPage(task: task);
+        return _SetCheckpointsPage(task: task, isAdd: isAdd);
       },
     );
   }
@@ -26,7 +28,9 @@ class SetCheckpointsPage extends StatelessWidget {
 
 class _SetCheckpointsPage extends StatefulWidget {
   final TaskData task;
-  const _SetCheckpointsPage({Key? key, required this.task}) : super(key: key);
+  final bool isAdd;
+  const _SetCheckpointsPage({Key? key, required this.task, required this.isAdd})
+      : super(key: key);
 
   @override
   State<_SetCheckpointsPage> createState() => _SetCheckpointsPageState();
@@ -131,7 +135,7 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                           const Align(
                             alignment: Alignment.center,
                             child: Text(
-                              'There are no checkpoints.\nPlease add some checkpoints.',
+                              'Add some checkpoints.',
                               style: TextStyle(fontSize: 16),
                             ),
                           ),
@@ -173,18 +177,45 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                                           db.collection('task').doc();
                                       final _task =
                                           context.read<TaskProvider>().task;
-                                      await newTaskRef.set({
-                                        "name": _task.name,
-                                        "userId": userId.data,
-                                        "start": _task.startDate,
-                                        "end": _task.endDate,
-                                        "tag": _task.tag,
-                                        "checkpoints":
-                                            context.read<TaskProvider>().length,
-                                        "finishedCheckpoints":
-                                            _task.finishedCheckpoints,
-                                        "imminent": _task.imminent,
-                                      });
+                                      if (widget.isAdd) {
+                                        await db
+                                            .collection('task')
+                                            .where('userId',
+                                                isEqualTo: userId.data)
+                                            .where('name',
+                                                isEqualTo: _task.name)
+                                            .get()
+                                            .then(
+                                          (QuerySnapshot ss) {
+                                            db
+                                                .collection('task')
+                                                .doc(ss.docs[0].id)
+                                                .update(
+                                              {
+                                                'checkpoints': _task
+                                                        .checkpoints +
+                                                    context
+                                                        .read<TaskProvider>()
+                                                        .length
+                                              },
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        await newTaskRef.set({
+                                          "name": _task.name,
+                                          "userId": userId.data,
+                                          "start": _task.startDate,
+                                          "end": _task.endDate,
+                                          "tag": _task.tag,
+                                          "checkpoints": context
+                                              .read<TaskProvider>()
+                                              .length,
+                                          "finishedCheckpoints":
+                                              _task.finishedCheckpoints,
+                                          "imminent": _task.imminent,
+                                        });
+                                      }
                                       LocalNotification
                                           .initLocalNotificationPlugin();
                                       LocalNotification.requestPermission();
@@ -237,6 +268,7 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                                               "다음 체크 포인트가 1일 남았습니다.\n어서 확인해보세요!");
                                         }
                                       }
+
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(

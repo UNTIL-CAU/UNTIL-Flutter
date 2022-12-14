@@ -106,7 +106,7 @@ class _TaskItemState extends State<TaskItem> {
                             builder: (BuildContext context) {
                               return alert;
                             });
-                      }, //TODO: 여기부터
+                      },
                       icon: const Icon(
                         Icons.delete,
                         color: mainColor,
