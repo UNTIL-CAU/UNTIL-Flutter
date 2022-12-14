@@ -140,7 +140,7 @@ class _CheckPointsState extends State<CheckPoints> {
                             horizontal: 25,
                             vertical: 17,
                           ),
-                          height: 100,
+                          height: 120,
                           decoration: BoxDecoration(
                             border: Border.all(
                                 color: docs[index]['isFinished']

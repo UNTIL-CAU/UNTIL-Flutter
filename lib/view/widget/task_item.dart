@@ -53,7 +53,7 @@ class _TaskItemState extends State<TaskItem> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       padding: const EdgeInsets.fromLTRB(20, 15, 20, 13),
-      height: widget.task.imminent ? 180 : 165,
+      height: widget.task.imminent ? 200 : 180,
       decoration: BoxDecoration(
         border: Border.all(
             color: widget.task.imminent ? sundayColor : Colors.black, width: 1),

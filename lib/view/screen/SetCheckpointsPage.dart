@@ -268,7 +268,6 @@ class _SetCheckpointsPageState extends State<_SetCheckpointsPage> {
                                               "다음 체크 포인트가 1일 남았습니다.\n어서 확인해보세요!");
                                         }
                                       }
-
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
