@@ -8,6 +8,7 @@ import 'package:until/styles.dart';
 import 'package:intl/intl.dart';
 import 'package:timelines/timelines.dart';
 import 'package:until/view/screen/AddTaskPage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CheckPoints extends StatefulWidget {
   final String taskName;
@@ -95,7 +96,7 @@ class _CheckPointsState extends State<CheckPoints> {
                         //UNTIL TODAY
                         visible: (index == untilTodayIndex),
                         child: const Padding(
-                          padding: EdgeInsets.fromLTRB(10, 20, 20, 20),
+                          padding: EdgeInsets.fromLTRB(10, 0, 20, 20),
                           child: Text(
                             'UNTIL Today',
                             style: TextStyle(
@@ -110,7 +111,7 @@ class _CheckPointsState extends State<CheckPoints> {
                         //NEXT
                         visible: (index == nextIndex),
                         child: const Padding(
-                          padding: EdgeInsets.fromLTRB(10, 20, 20, 20),
+                          padding: EdgeInsets.fromLTRB(10, 0, 20, 20),
                           child: Text(
                             'NEXT Checkpoints',
                             style: TextStyle(
@@ -144,55 +145,73 @@ class _CheckPointsState extends State<CheckPoints> {
                           ),
                           child: InkWell(
                             onTap: () {
-                              if (docs[index]['isFinished']) {
-                                // 완료취소
-                                var finishedNum = 0;
-                                var i = 0;
-                                for (i; i < docs.length; i++) {
-                                  if (docs[i]['isFinished']) finishedNum++;
-                                }
-                                FirebaseFirestore.instance
-                                    .collection('task')
-                                    .where('userId', isEqualTo: widget.userId)
-                                    .where('name', isEqualTo: widget.taskName)
-                                    .get()
-                                    .then((QuerySnapshot ss) {
-                                  FirebaseFirestore.instance
-                                      .collection('task')
-                                      .doc(ss.docs[0].id)
-                                      .update({
-                                    'finishedCheckpoints': --finishedNum
-                                  });
-                                });
-                              } else {
-                                // 완료하기
-                                var finishedNum = 0;
-                                var i = 0;
-                                for (i; i < docs.length; i++) {
-                                  if (docs[i]['isFinished']) finishedNum++;
-                                }
-                                FirebaseFirestore.instance
-                                    .collection('task')
-                                    .where('userId', isEqualTo: widget.userId)
-                                    .where('name', isEqualTo: widget.taskName)
-                                    .get()
-                                    .then((QuerySnapshot ss) {
-                                  FirebaseFirestore.instance
-                                      .collection('task')
-                                      .doc(ss.docs[0].id)
-                                      .update({
-                                    'finishedCheckpoints': ++finishedNum
-                                  });
-                                });
+                              bool isAllow = false;
+                              if (index == 0) {
+                                isAllow = true;
+                              } else if (docs[index - 1]['isFinished']) {
+                                isAllow = true;
                               }
 
-                              FirebaseFirestore.instance
-                                  // checkpoint finsh 설정
-                                  .collection('checkpoint')
-                                  .doc(snapshot.data!.docs[index].id)
-                                  .update({
-                                'isFinished': !docs[index]['isFinished']
-                              });
+                              if (isAllow) {
+                                if (docs[index]['isFinished']) {
+                                  // 완료취소
+                                  var finishedNum = 0;
+                                  var i = 0;
+                                  for (i; i < docs.length; i++) {
+                                    if (docs[i]['isFinished']) finishedNum++;
+                                  }
+                                  FirebaseFirestore.instance
+                                      .collection('task')
+                                      .where('userId', isEqualTo: widget.userId)
+                                      .where('name', isEqualTo: widget.taskName)
+                                      .get()
+                                      .then((QuerySnapshot ss) {
+                                    FirebaseFirestore.instance
+                                        .collection('task')
+                                        .doc(ss.docs[0].id)
+                                        .update({
+                                      'finishedCheckpoints': --finishedNum
+                                    });
+                                  });
+                                } else {
+                                  // 완료하기
+                                  var finishedNum = 0;
+                                  var i = 0;
+                                  for (i; i < docs.length; i++) {
+                                    if (docs[i]['isFinished']) finishedNum++;
+                                  }
+                                  FirebaseFirestore.instance
+                                      .collection('task')
+                                      .where('userId', isEqualTo: widget.userId)
+                                      .where('name', isEqualTo: widget.taskName)
+                                      .get()
+                                      .then((QuerySnapshot ss) {
+                                    FirebaseFirestore.instance
+                                        .collection('task')
+                                        .doc(ss.docs[0].id)
+                                        .update({
+                                      'finishedCheckpoints': ++finishedNum
+                                    });
+                                  });
+                                }
+
+                                FirebaseFirestore.instance
+                                    // checkpoint finsh 설정
+                                    .collection('checkpoint')
+                                    .doc(snapshot.data!.docs[index].id)
+                                    .update({
+                                  'isFinished': !docs[index]['isFinished']
+                                });
+                              } else {
+                                Fluttertoast.showToast(
+                                    msg: "이전의 체크포인트를 먼저 완료해주세요!",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: mainColor,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
+                              }
                             },
                             child: SizedBox(
                               child: Column(
